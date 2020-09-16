@@ -74,7 +74,10 @@ class StoryVideoState extends State<StoryVideo> {
   @override
   void initState() {
     super.initState();
+    initialize();
+  }
 
+  Future<void> initialize()async{
     widget.storyController.pause();
 
     widget.videoLoader.loadVideo(() {
@@ -90,12 +93,40 @@ class StoryVideoState extends State<StoryVideo> {
         if (widget.storyController != null) {
           _streamSubscription =
               widget.storyController.playbackNotifier.listen((playbackState) {
-            if (playbackState == PlaybackState.pause) {
-              playerController.pause();
-            } else {
-              playerController.play();
-            }
-          });
+                if (playbackState == PlaybackState.pause) {
+                  playerController.pause();
+                } else {
+                  playerController.play();
+                }
+              });
+        }
+      } else {
+        setState(() {});
+      }
+    });
+  }
+  Future<void> reInitialize()async{
+    widget.storyController.pause();
+    playerController.pause();
+    widget.videoLoader.loadVideo(() {
+      if (widget.videoLoader.state == LoadState.success) {
+        this.playerController =
+            VideoPlayerController.file(widget.videoLoader.videoFile);
+
+        playerController.initialize().then((v) {
+          setState(() {});
+          widget.storyController.play();
+        });
+
+        if (widget.storyController != null) {
+          _streamSubscription =
+              widget.storyController.playbackNotifier.listen((playbackState) {
+                if (playbackState == PlaybackState.pause) {
+                  playerController.pause();
+                } else {
+                  playerController.play();
+                }
+              });
         }
       } else {
         setState(() {});
@@ -113,7 +144,9 @@ class StoryVideoState extends State<StoryVideo> {
         ),
       );
     }
-
+   /* if(widget.videoLoader.state == LoadState.success && !playerController.value.initialized){
+      reInitialize();
+    }*/
     return widget.videoLoader.state == LoadState.loading
         ? Center(
             child: Container(

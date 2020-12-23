@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:math';
 
 import '../utils.dart';
 import '../controller/story_controller.dart';

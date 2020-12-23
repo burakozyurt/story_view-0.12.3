@@ -138,10 +138,14 @@ class StoryVideoState extends State<StoryVideo> {
     if (widget.videoLoader.state == LoadState.success &&
         playerController.value.initialized) {
       return Center(
-        child: AspectRatio(
+        child: Transform.rotate(alignment: Alignment.center,
+            angle: playerController.value.aspectRatio < 1 ? 0 : pi/2, Transform.scale(
+          scale:playerController.value.aspectRatio < 1 ? 1 : 1 * playerController.value.aspectRatio,
+          AspectRatio(
           aspectRatio: playerController.value.aspectRatio,
           child: VideoPlayer(playerController),
-        ),
+        ),)
+        )
       );
     }
    /* if(widget.videoLoader.state == LoadState.success && !playerController.value.initialized){

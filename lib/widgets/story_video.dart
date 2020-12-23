@@ -27,7 +27,8 @@ class VideoLoader {
     }
 
     final fileStream = DefaultCacheManager()
-        .getFileStream(this.url, headers: this.requestHeaders);
+        .getFileStream(this.url, headers: this.requestHeaders
+    );
 
     fileStream.listen((fileResponse) {
       if (fileResponse is FileInfo) {
@@ -37,7 +38,8 @@ class VideoLoader {
           onComplete();
         }
       }
-    });
+    }
+    );
   }
 }
 
@@ -46,14 +48,16 @@ class StoryVideo extends StatefulWidget {
   final VideoLoader videoLoader;
 
   StoryVideo(this.videoLoader, {this.storyController, Key key})
-      : super(key: key ?? UniqueKey());
+      : super(key: key ?? UniqueKey()
+  );
 
   static StoryVideo url(String url,
       {StoryController controller,
-      Map<String, dynamic> requestHeaders,
-      Key key}) {
+        Map<String, dynamic> requestHeaders,
+        Key key}) {
     return StoryVideo(
-      VideoLoader(url, requestHeaders: requestHeaders),
+      VideoLoader(url, requestHeaders: requestHeaders
+      ),
       storyController: controller,
       key: key,
     );
@@ -78,18 +82,21 @@ class StoryVideoState extends State<StoryVideo> {
     initialize();
   }
 
-  Future<void> initialize()async{
+  Future<void> initialize() async {
     widget.storyController.pause();
 
     widget.videoLoader.loadVideo(() {
       if (widget.videoLoader.state == LoadState.success) {
         this.playerController =
-            VideoPlayerController.file(widget.videoLoader.videoFile);
+            VideoPlayerController.file(widget.videoLoader.videoFile
+            );
 
         playerController.initialize().then((v) {
-          setState(() {});
+          setState(() {}
+          );
           widget.storyController.play();
-        });
+        }
+        );
 
         if (widget.storyController != null) {
           _streamSubscription =
@@ -99,25 +106,32 @@ class StoryVideoState extends State<StoryVideo> {
                 } else {
                   playerController.play();
                 }
-              });
+              }
+              );
         }
       } else {
-        setState(() {});
+        setState(() {}
+        );
       }
-    });
+    }
+    );
   }
-  Future<void> reInitialize()async{
+
+  Future<void> reInitialize() async {
     widget.storyController.pause();
     playerController.pause();
     widget.videoLoader.loadVideo(() {
       if (widget.videoLoader.state == LoadState.success) {
         this.playerController =
-            VideoPlayerController.file(widget.videoLoader.videoFile);
+            VideoPlayerController.file(widget.videoLoader.videoFile
+            );
 
         playerController.initialize().then((v) {
-          setState(() {});
+          setState(() {}
+          );
           widget.storyController.play();
-        });
+        }
+        );
 
         if (widget.storyController != null) {
           _streamSubscription =
@@ -127,47 +141,55 @@ class StoryVideoState extends State<StoryVideo> {
                 } else {
                   playerController.play();
                 }
-              });
+              }
+              );
         }
       } else {
-        setState(() {});
+        setState(() {}
+        );
       }
-    });
+    }
+    );
   }
 
   Widget getContentView() {
     if (widget.videoLoader.state == LoadState.success &&
         playerController.value.initialized) {
       return Center(
-        child: Transform.rotate(alignment: Alignment.center,
-            angle: playerController.value.aspectRatio < 1 ? 0 : pi/2, Transform.scale(
-          scale:playerController.value.aspectRatio < 1 ? 1 : 1 * playerController.value.aspectRatio,
-          AspectRatio(
-          aspectRatio: playerController.value.aspectRatio,
-          child: VideoPlayer(playerController),
-        ),)
-        )
+          child: Transform.rotate(alignment: Alignment.center,
+              angle: playerController.value.aspectRatio < 1 ? 0 : pi / 2,
+              child:Transform.scale(
+                scale: playerController.value.aspectRatio < 1 ? 1 : 1 * playerController.value.aspectRatio,
+                child:AspectRatio(
+                  aspectRatio: playerController.value.aspectRatio,
+                  child: VideoPlayer(playerController
+                  ),
+                ),
+              )
+          )
       );
     }
-   /* if(widget.videoLoader.state == LoadState.success && !playerController.value.initialized){
+    /* if(widget.videoLoader.state == LoadState.success && !playerController.value.initialized){
       reInitialize();
     }*/
     return widget.videoLoader.state == LoadState.loading
         ? Center(
-            child: Container(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 2,
-              ),
-            ),
-          )
+      child: Container(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white
+          ),
+          strokeWidth: 2,
+        ),
+      ),
+    )
         : Center(
-            child: Text(
-            "Hikaye yüklenemedi.",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ));
+        child: Text(
+          "Hikaye yüklenemedi.",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        )
+    );
   }
 
   @override
